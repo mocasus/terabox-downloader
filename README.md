@@ -1,5 +1,9 @@
 # 📦 Terabox Downloader Bot
 
+<p align="center">
+  <img src="assets/logo.png" alt="Terabox Downloader" width="120">
+</p>
+
 > **Telegram Bot untuk download file dari Terabox — kirim link, terima file.**
 > Dynamic QRIS payment via KlikQRIS. Satu command langsung jalan.
 
