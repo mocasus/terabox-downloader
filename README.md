@@ -240,10 +240,11 @@
 
 ## 🚀 Quick Start
 
-### Cara Paling Cepat — 1 Command
+### Cara Paling Cepat — 2 Command
 
 ```bash
-npx terabox-downloader
+npm install -g terabox-downloader
+tbd
 ```
 
 **Itu aja.** Pertama kali jalan, CLI akan nanya 6 pertanyaan:
@@ -260,6 +261,14 @@ npx terabox-downloader
 
 Abis itu bot langsung jalan. Ga perlu clone, ga perlu venv, ga perlu pip install.
 
+### Alternatif: Tanpa Install
+
+```bash
+npx terabox-downloader
+```
+
+Sama aja — cuma ga permanent di PATH.
+
 ### Cara Lain
 
 | Metode | Command |
@@ -272,10 +281,13 @@ Abis itu bot langsung jalan. Ga perlu clone, ga perlu venv, ga perlu pip install
 ### Perintah CLI
 
 ```bash
-npx terabox-downloader          # Start bot
-npx terabox-downloader setup    # Ulang setup .env
-npx terabox-downloader update   # Git pull + update deps
-npx terabox-downloader start    # Start ulang (skip setup)
+tbd                  # Start bot (alias pendek)
+tbd setup            # Ulang setup .env
+tbd update           # Git pull + update deps
+tbd start            # Start ulang (skip setup)
+
+# atau nama panjangnya:
+terabox-downloader [setup|update|start]
 ```
 
 > **Prasyarat:** Node.js 18+, Python 3.10+, Git. Udah. Ga perlu install apa-apa lagi — CLI yang handle sisanya.
