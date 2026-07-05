@@ -146,3 +146,36 @@ def generate_order_id(user_id: int) -> str:
     """Generate unique order ID: VIP-{user_id}-{timestamp}"""
     ts = int(datetime.now().timestamp())
     return f"VIP-{user_id}-{ts}"
+
+
+# ── KlikQRIS Class Wrapper ──────────────────────────
+
+class KlikQRIS:
+    """KlikQRIS payment gateway client.
+
+    Usage:
+        qris = KlikQRIS()
+        result = await qris.create(amount=15000, user_id=123)
+        status = await qris.check(order_id)
+    """
+
+    # Re-exports for backward compat
+    create_transaction = staticmethod(create_transaction)
+    check_status = staticmethod(check_status)
+    verify_signature = staticmethod(verify_signature)
+    generate_order_id = staticmethod(generate_order_id)
+
+    @staticmethod
+    async def create(amount: int, user_id: int, description: str = "") -> dict:
+        """Quick create: generate order_id + create transaction."""
+        order_id = generate_order_id(user_id)
+        return await create_transaction(
+            order_id=order_id,
+            amount=amount,
+            keterangan=description or f"VIP — {user_id}",
+        )
+
+    @staticmethod
+    async def check(order_id: str) -> dict:
+        """Check transaction status."""
+        return await check_status(order_id)

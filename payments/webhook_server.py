@@ -139,3 +139,31 @@ async def start_webhook_server(bot) -> web.AppRunner:
     await site.start()
     logger.info(f"Webhook server listening on port {config.WEBHOOK_PORT}")
     return runner
+
+
+# ── WebhookServer Class Wrapper ──────────────────────
+
+class WebhookServer:
+    """KlikQRIS webhook receiver server.
+
+    Usage:
+        server = WebhookServer(bot)
+        runner = await server.start()
+        # ... bot runs ...
+        await runner.cleanup()
+    """
+
+    def __init__(self, bot):
+        self.bot = bot
+        self._runner = None
+
+    async def start(self) -> web.AppRunner:
+        """Start the webhook HTTP server. Returns AppRunner."""
+        self._runner = await start_webhook_server(self.bot)
+        return self._runner
+
+    async def stop(self):
+        """Stop the webhook server."""
+        if self._runner:
+            await self._runner.cleanup()
+            self._runner = None
