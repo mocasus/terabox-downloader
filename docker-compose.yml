@@ -1,0 +1,12 @@
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data.db:/app/data.db
+      - terabox-tmp:/tmp/terabox
+
+volumes:
+  terabox-tmp:
