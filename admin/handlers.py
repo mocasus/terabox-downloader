@@ -1,6 +1,27 @@
 """Admin command handlers."""
+
+import logging
+
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
 from config import config
 from database.models import db
+
+logger = logging.getLogger(__name__)
+
+__all__ = [
+    "is_admin",
+    "pending_command",
+    "approve_callback",
+    "reject_callback",
+    "vipadd_command",
+    "viprem_command",
+    "vips_command",
+    "stats_command",
+    "config_command",
+    "approve_command",
+    "reject_command",
+]
 
 
 def is_admin(user_id: int) -> bool:

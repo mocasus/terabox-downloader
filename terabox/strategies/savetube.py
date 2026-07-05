@@ -1,7 +1,15 @@
 """Strategy 1: ytshorts.savetube.me API — no cookie needed (primary)."""
+
+import logging
 import re
+
 import aiohttp
+
 from terabox.utils import find_between, format_size
+
+logger = logging.getLogger(__name__)
+
+__all__ = ["resolve"]
 
 
 async def resolve(url: str, session: aiohttp.ClientSession = None) -> dict | None:

@@ -1,6 +1,13 @@
 """Multi-strategy Terabox URL resolver with auto-fallback."""
+import logging
+
 import aiohttp
+
 from terabox.strategies import savetube, publicearn, direct
+
+logger = logging.getLogger(__name__)
+
+__all__ = ["resolve"]
 
 STRATEGIES = [
     ("savetube", savetube.resolve),

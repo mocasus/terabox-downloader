@@ -1,8 +1,14 @@
 """Database layer — SQLite with thread-safe operations."""
+
+import logging
 import sqlite3
 import threading
-from datetime import datetime, timedelta
 from contextlib import contextmanager
+from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
+
+__all__ = ["Database", "db"]
 
 
 class Database:

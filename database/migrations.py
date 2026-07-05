@@ -1,12 +1,24 @@
-"""Database migrations — run on startup."""
+"""Database migrations — run on startup to ensure schema is current."""
 import sqlite3
+import logging
+
+logger = logging.getLogger(__name__)
+
+__all__ = ["migrate"]
 
 
-def migrate(db_path: str):
-    """Auto-migrate: create missing tables/columns."""
+def migrate(db_path: str) -> None:
+    """Auto-migrate database schema: create missing tables and columns.
+
+    Safe to run on every startup — uses IF NOT EXISTS and
+    per-column existence checks.
+
+    Args:
+        db_path: Path to SQLite database file.
+    """
     conn = sqlite3.connect(db_path)
     try:
-        # Ensure tables exist
+        # ── Create tables if not exist ──
         conn.executescript("""
             CREATE TABLE IF NOT EXISTS users (
                 id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,9 +34,11 @@ def migrate(db_path: str):
             CREATE TABLE IF NOT EXISTS payments (
                 id              INTEGER PRIMARY KEY AUTOINCREMENT,
                 telegram_id     BIGINT NOT NULL,
+                order_id        TEXT UNIQUE,
                 amount          INTEGER NOT NULL,
-                method          TEXT DEFAULT 'manual',
+                method          TEXT DEFAULT 'klikqris',
                 proof_file      TEXT,
+                signature       TEXT,
                 status          TEXT DEFAULT 'pending',
                 admin_note      TEXT,
                 created_at      TEXT DEFAULT (datetime('now','localtime')),
@@ -32,15 +46,34 @@ def migrate(db_path: str):
             );
         """)
 
-        # Migrate: ensure is_vip column exists (safety check)
+        # ── Column-level migrations ──
+        # Check existing columns and add any that are missing
         cols = [r[1] for r in conn.execute("PRAGMA table_info(users)").fetchall()]
-        if "is_vip" not in cols:
-            conn.execute("ALTER TABLE users ADD COLUMN is_vip INTEGER DEFAULT 0")
-        if "vip_expiry" not in cols:
-            conn.execute("ALTER TABLE users ADD COLUMN vip_expiry TEXT")
-        if "total_downloads" not in cols:
-            conn.execute("ALTER TABLE users ADD COLUMN total_downloads INTEGER DEFAULT 0")
+        user_migrations = {
+            "is_vip": "ALTER TABLE users ADD COLUMN is_vip INTEGER DEFAULT 0",
+            "vip_expiry": "ALTER TABLE users ADD COLUMN vip_expiry TEXT",
+            "total_downloads": "ALTER TABLE users ADD COLUMN total_downloads INTEGER DEFAULT 0",
+        }
+        for col, sql in user_migrations.items():
+            if col not in cols:
+                logger.info(f"Migrating users table: adding {col}")
+                conn.execute(sql)
+
+        pay_cols = [r[1] for r in conn.execute("PRAGMA table_info(payments)").fetchall()]
+        pay_migrations = {
+            "order_id": "ALTER TABLE payments ADD COLUMN order_id TEXT UNIQUE",
+            "signature": "ALTER TABLE payments ADD COLUMN signature TEXT",
+        }
+        for col, sql in pay_migrations.items():
+            if col not in pay_cols:
+                logger.info(f"Migrating payments table: adding {col}")
+                conn.execute(sql)
 
         conn.commit()
+        logger.info("Database migration complete")
+
+    except Exception as e:
+        logger.error(f"Migration failed: {e}")
+        raise
     finally:
         conn.close()

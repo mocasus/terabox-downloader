@@ -1,9 +1,17 @@
 """File downloader — stream from URL, upload to Telegram."""
+
+import logging
 import os
 import asyncio
+
 import aiohttp
 import aiofiles
+
 from config import config
+
+logger = logging.getLogger(__name__)
+
+__all__ = ["download_file", "upload_to_telegram"]
 
 
 async def download_file(url: str, file_name: str, progress_callback=None) -> str | None:
