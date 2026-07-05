@@ -1,7 +1,7 @@
 # 📦 Terabox Downloader Bot
 
 <p align="center">
-  <img src="assets/logo.png" alt="Terabox Downloader" width="120">
+  <img src="https://raw.githubusercontent.com/mocasus/terabox-downloader/main/assets/logo.png" alt="Terabox Downloader" width="120">
 </p>
 
 > **Telegram Bot untuk download file dari Terabox — kirim link, terima file.**
