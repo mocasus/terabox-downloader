@@ -50,9 +50,11 @@ class Database:
                 CREATE TABLE IF NOT EXISTS payments (
                     id              INTEGER PRIMARY KEY AUTOINCREMENT,
                     telegram_id     BIGINT NOT NULL,
+                    order_id        TEXT UNIQUE,
                     amount          INTEGER NOT NULL,
-                    method          TEXT DEFAULT 'manual',
+                    method          TEXT DEFAULT 'klikqris',
                     proof_file      TEXT,
+                    signature       TEXT,
                     status          TEXT DEFAULT 'pending',
                     admin_note      TEXT,
                     created_at      TEXT DEFAULT (datetime('now','localtime')),
@@ -149,12 +151,13 @@ class Database:
 
     # ── PAYMENTS ───────────────────────────────────────
 
-    def create_payment(self, telegram_id: int, amount: int, method: str, proof_file: str = None) -> int:
+    def create_payment(self, telegram_id: int, amount: int, method: str = "klikqris",
+                        order_id: str = None, signature: str = None) -> int:
         with self._tx() as conn:
             cur = conn.execute(
-                """INSERT INTO payments (telegram_id, amount, method, proof_file)
-                   VALUES (?, ?, ?, ?)""",
-                (telegram_id, amount, method, proof_file),
+                """INSERT INTO payments (telegram_id, order_id, amount, method, signature)
+                   VALUES (?, ?, ?, ?, ?)""",
+                (telegram_id, order_id, amount, method, signature),
             )
             return cur.lastrowid
 
@@ -185,6 +188,29 @@ class Database:
         conn = self._get_conn()
         row = conn.execute(
             "SELECT * FROM payments WHERE id=?", (payment_id,)
+        ).fetchone()
+        return dict(row) if row else None
+
+    def get_payment_by_order_id(self, order_id: str) -> dict | None:
+        conn = self._get_conn()
+        row = conn.execute(
+            "SELECT * FROM payments WHERE order_id=?", (order_id,)
+        ).fetchone()
+        return dict(row) if row else None
+
+    def approve_payment_by_order_id(self, order_id: str):
+        with self._tx() as conn:
+            conn.execute(
+                """UPDATE payments SET status='approved',
+                   processed_at=datetime('now','localtime') WHERE order_id=?""",
+                (order_id,),
+            )
+
+    def get_user_pending_payment(self, telegram_id: int) -> dict | None:
+        conn = self._get_conn()
+        row = conn.execute(
+            "SELECT * FROM payments WHERE telegram_id=? AND status='pending' ORDER BY created_at DESC LIMIT 1",
+            (telegram_id,),
         ).fetchone()
         return dict(row) if row else None
 
