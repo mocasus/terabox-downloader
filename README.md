@@ -40,7 +40,6 @@
 - [✨ Fitur](#-fitur)
 - [🎮 Demo](#-demo)
 - [🚀 Quick Start](#-quick-start)
-- [⚙️ Konfigurasi](#️-konfigurasi)
 - [📋 Perintah Bot](#-perintah-bot)
 - [💳 Pembayaran KlikQRIS](#-pembayaran-klikqris)
 - [🏗️ Arsitektur](#️-arsitektur)
@@ -241,63 +240,45 @@
 
 ## 🚀 Quick Start
 
-### Prasyarat
+### Cara Paling Cepat — 1 Command
 
-| Kebutuhan | Detail |
+```bash
+npx terabox-downloader
+```
+
+**Itu aja.** Pertama kali jalan, CLI akan nanya 6 pertanyaan:
+
+```
+🤖 Bot Token (dari @BotFather):  <paste>
+👑 Admin Telegram ID:              <paste>
+💰 Harga VIP (default: 10000):     <enter>
+⏳ Durasi VIP hari (default: 7):   <enter>
+🔑 KlikQRIS API Key:               <paste>
+🏪 KlikQRIS Merchant ID:           <paste>
+🧪 Sandbox mode? (y/N):
+```
+
+Abis itu bot langsung jalan. Ga perlu clone, ga perlu venv, ga perlu pip install.
+
+### Cara Lain
+
+| Metode | Command |
 |---|---|
-| **Python** | 3.11 atau lebih baru |
-| **Bot Token** | Dari [@BotFather](https://t.me/BotFather) di Telegram |
-| **Admin ID** | ID Telegram kamu (dari [@userinfobot](https://t.me/userinfobot)) |
-| **KlikQRIS** | Akun di [klikqris.com](https://klikqris.com) (opsional, untuk pembayaran) |
+| **npm** (recommended) | `npx terabox-downloader` |
+| **pip** | `pip install terabox-downloader-bot && terabox-downloader` |
+| **Docker** | `docker run -e BOT_TOKEN=xxx mocasus/terabox-downloader` |
+| **Manual** | Clone repo → `pip install -r requirements.txt` → `python bot.py` |
 
-### 1️⃣ Clone Repository
-
-```bash
-git clone https://github.com/mocasus/terabox-downloader.git
-cd terabox-downloader
-```
-
-### 2️⃣ Setup Virtual Environment
+### Perintah CLI
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
-
-pip install -r requirements.txt
+npx terabox-downloader          # Start bot
+npx terabox-downloader setup    # Ulang setup .env
+npx terabox-downloader update   # Git pull + update deps
+npx terabox-downloader start    # Start ulang (skip setup)
 ```
 
-### 3️⃣ Konfigurasi Environment
-
-```bash
-# Copy template .env
-cp .env.example .env
-
-# Edit dengan text editor
-nano .env
-```
-
-**Minimal `.env`:**
-```env
-BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
-ADMIN_IDS=123456789
-```
-
-### 4️⃣ Jalankan Bot
-
-```bash
-python bot.py
-```
-
-Output:
-```
-2026-07-05 19:30:00 - Database initialized
-2026-07-05 19:30:00 - Webhook server on port 8000
-2026-07-05 19:30:00 - Webhook URL: https://domain.com/webhook/klikqris
-2026-07-05 19:30:00 - Bot polling started...
-```
-
-Bot sudah running! Coba chat bot kamu di Telegram dengan `/start`.
+> **Prasyarat:** Node.js 18+, Python 3.10+, Git. Udah. Ga perlu install apa-apa lagi — CLI yang handle sisanya.
 
 ---
 

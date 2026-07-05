@@ -1,0 +1,4 @@
+# npm publish — only ship CLI installer
+!cli.js
+!package.json
+!README.md

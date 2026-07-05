@@ -1,0 +1,16 @@
+{
+  "name": "terabox-downloader",
+  "version": "1.0.0",
+  "description": "Telegram bot untuk download file dari Terabox — satu command langsung jalan",
+  "keywords": ["terabox", "downloader", "telegram", "bot", "qris", "klikqris"],
+  "homepage": "https://github.com/mocasus/terabox-downloader",
+  "bugs": "https://github.com/mocasus/terabox-downloader/issues",
+  "license": "MIT",
+  "author": "mmoaa",
+  "bin": {
+    "terabox-downloader": "./cli.js",
+    "tbd": "./cli.js"
+  },
+  "files": ["cli.js"],
+  "repository": "mocasus/terabox-downloader"
+}
